@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+# A script to compute the power from a gem5 simulation
+# Takes as parameters, the paths to config.ini, stats.txt template.xml, configuration.xml, the parser program and the mcpat program (the argument before last is the print level for McPAT)
+# The last argument is an output file for storing the results from McPAT
+
+# Example
+# ./compute stats.txt config.ini template.xml configuration.xml gem5-mcpat-parser mcpat/mcpat 5 results_file.txt
+
+# $4 is just the name of the configuration file 
+
+echo "Parsing XML file"
+echo "---------------------------------------------------------"
+./$5 -s $1 -c $2 -x $3 -o $4
+echo "---------------------------------------------------------"
+echo "Fixing incorrect arguments from stats.txt and config.ini"
+echo "---------------------------------------------------------"
+./parsefix $4 $1 $2
+echo "---------------------------------------------------------"
+echo "Computing power with McPAT (storing in $8)"
+echo "---------------------------------------------------------"
+./$6 -infile $4 -print_level $7 > $8
