@@ -1,0 +1,8 @@
+rm power_trace.txt
+for ((i=1; i<10; ++i))
+do
+    ./gem5-mcpat-parser -x template.xml -c config.ini -s /home/anzou/gem5/gem5_2_mcpat/statsfile/${i}.txt -o tep.xml
+    ../mcpat/mcpat -infile tep.xml > power.txt
+    fgrep "Runtime Dynamic = " power.txt | sed -n '2p' | sed 's/ W//g' | sed 's/Runtime Dynamic = //g' | sed 's/ //g' >> power_trace.txt
+    echo $i
+done
